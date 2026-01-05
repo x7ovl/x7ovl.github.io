@@ -1,99 +1,77 @@
-<!DOCTYPE html>
 
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hexo | categories</title>
-
-    
-    <meta name="description" content="">
-    <meta name="keywords" content="">
-    <meta name="author" content="John Doe">
-
-    <meta name="color-scheme" content="light dark">
-
-    
-    
-<link rel="stylesheet" href="/styles/index.css">
-
-    
-    <link rel="shortcut icon" href="/imgs/logo.png">
-
-    
-    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
-    
-    
-
-    
-<meta name="generator" content="Hexo 8.1.1"></head>
-
-
-<body id="delicate-app">
-    <main>
-        <div class="container">
-            <section class="page-top-badge flex-between w100">
-                <div>
-                    <a href="/">
-                        <span title="github"><i class="fa fa-home" aria-hidden="true"></i></span>
-                    </a>
-                </div>
-                <!-- <div>
-                    
-                </div> -->
-            </section>
-            
-
-<section class="cates-container">
-    <h1>List of Categories</h1>
-    
-</section>
-
-            <section class="article-bottom flex-between">
-                <div class="flex-center">
-                    <img src="/imgs/logo.png" class="logo">
-                    <span>长风破浪会有时，直挂云帆济沧海</span>
-                </div>
-                <div class="flex-center">
-                    <a href="mailto:jjack_chen3@163.com">
-                        <span title="envelope">
-                            <i class="fa fa-envelope" aria-hidden="true"></i>
-                        </span>
-                    </a>
-                    <a target="_blank" rel="noopener" href="https://github.com/can-dy-jack/hexo-theme-delicate">
-                        <span title="github" style="font-size: 18px;">
-                            <i class="fa fa-github" aria-hidden="true"></i>
-                        </span>
-                    </a>
-                </div>
-            </section>
-        </div>
-    </main>
-
-    <div class="to-top">
-    <a href="javascript: void(0)" onclick="delicate.toTop()">
-        <i class="fa fa-chevron-up" aria-hidden="true"></i>
-    </a>
-</div>
-
-    <footer>
-        <div class="footer-info gray">
-    <div>
-        <span><a target="_blank" rel="noopener" href="https://github.com/can-dy-jack/hexo-theme-delicate">Delicate</a> theme designed with ❤️ by <a target="_blank" rel="noopener" href="https://github.com/can-dy-jack">can-dy-jack</a></span>
+    <section id="post-main"><section class="layout-wrap">
+    <div class="layout-title page-indent">
+        <span>Categories</span>
     </div>
-    <div>
-        <span>Copyright Ⓒ 2026. All rights reserved.</span>
+    <div class="layout-wrap-inner list-categories page-indent">
+        
     </div>
-</div>
-    </footer>
-
-    
+</section></section>
 
 
-<script src="/js/index.js"></script>
+<script>
+    // anchorInterceptor
+    anchorInterceptor = function(path) {
+        // change hash to trigger route change
+        window.location.hash = `${path}`;
+        // scroll to top
+        $('body, html').animate({ scrollTop: 0 }, 600);
+    }
 
+    document.addEventListener('DOMContentLoaded', function() {
+        var container = document.getElementById('container');
+        if (!container) {
+            var path = window.location.pathname;
+            var origin = window.location.origin;
+            console.log('path:',path, '\norigin:',origin);
+            console.log('document:', document)
+            window.location.href = origin + '#' + path;
+        }
+    });
 
-</body>
+    $(document).ready(function() {
+        if ($('#toggle-sidebar-btn').hasClass('fa-angle-right')) {
+            $('.page-indent').toggleClass('collapsed');
+            $('.article-meta').toggleClass('collapsed');
+            $('.article-more-link').toggleClass('collapsed');
+        }
+        const colorIndex = localStorage.getItem("ColorIndex");
+        // init color
+        changeBackgroundColor(BackColors[colorIndex]);
+    });
 
-</html>
+    anchorComponentOnclick = function(event) {
+        // 文章的头链接 | 点击监听
+        $('.article-category-link').on('click', function(event) {
+            event.preventDefault();
+            const path = $(this).attr('href');
+            anchorInterceptor(path);
+        });
+        // 目录的跳转 | 点击监听
+        $('.toc-link').on('click', function(event) {
+            event.preventDefault();
+            const params = new URLSearchParams(window.location.search);
+            //const sectionId = $(this).attr('href').replace('?section=', '');
+            // 更新 URL，但不刷新页面
+            const idx = decodeURIComponent($(this).attr('href')).slice(1);
+            if (idx != 'ndefined') {
+                params.set('section', idx);
+                const curPath = window.location.pathname + window.location.hash.split('?section=')[0];
+                const newUrl = curPath + '?' + params.toString();
+                window.history.pushState({}, '', newUrl);
+                // 滚动到对应位置
+                scrollToSection(idx);
+            }
+        });
+        $('.tag-link-link').on('click', function(event) {
+            event.preventDefault();
+            const path = $(this).attr('href');
+            anchorInterceptor(path);
+        });
+        $('#page-nav').on('click', 'a', function(event) {
+            event.preventDefault();
+            const path = $(this).attr('href');
+            anchorInterceptor(path);
+        });
+    }
+</script>
